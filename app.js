@@ -1,28 +1,51 @@
 const chalk = require('chalk');
- 
-console.log(chalk.blue.bold.inverse('Error!'));
-
-
-
-
-
-// const validator = require('validator')
-
-// console.log(validator.isURL('aditee@you.com'))
-
-
-
-
+const yargs = require('yargs')
 const getNotes = require('./notes.js')
-
-const msg = getNotes()
-
-console.log(msg)
+yargs.version('1.1.0')
 
 
+yargs.command({
+    command: 'add',
+    describe: 'Add a note',
+    builder: {
+        title:{
+            describe: 'Title of the note',
+            demandOption: true,
+            type: 'string'
+        },
+        body: {
+            describe: 'Note body',
+            demandOption: true,
+            type: 'string'
+        }
+    },
+    handler: function(argv){
+        console.log('Title : ' +argv.title)
+        console.log('Body : '+argv.body)
+    }
+})
 
-// const add = require('./utils')
+yargs.command({
+    command: 'remove',
+    describe: 'Remove a note',
+    handler: function(){
+        console.log('Removing the note')
+    }
+})
 
-// const sum = add(34,22)
+yargs.command({
+    command: 'read',
+    describe: 'Read thenote',
+    handler: function() {
+        console.log('Reading the note')
+    }
+})
 
-// console.log(sum);
+yargs.command({
+    command: 'list',
+    describe: 'Listing the notes',
+    handler: function() {
+        console.log('Listing the notes')
+    }
+})
+yargs.parse()
