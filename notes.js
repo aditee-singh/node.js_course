@@ -2,17 +2,14 @@ const fs = require('fs')
 const chalk = require('chalk')
 const { title } = require('process')
 
-const getNotes = function(){
-    return 'Your notes are...'
-}
+const getNotes = () => 'Your notes are...'
 
-const addNote = function (title,body) {
+const addNote = (title,body) => {
     const notes = loadNote()
-    const duplicateNotes = notes.filter(function(note){
-        return note.title === title
-    })
+    //const duplicateNotes = notes.filter((note)=> note.title === title)
+    const duplicateNote = notes.find((note)=> note.title === title)
 
-    if(duplicateNotes.length === 0){
+    if(!duplicateNote){
         notes.push({
             title: title,
             body: body
@@ -25,11 +22,9 @@ const addNote = function (title,body) {
     
 }
 
-const removeNote = function (title) {
+const removeNote = (title) => {
     const notes = loadNote()
-    const newNotes = notes.filter(function(note){
-        return note.title !== title
-    })
+    const newNotes = notes.filter((note)=> note.title !== title)
     if(notes.length > newNotes.length){
         saveNote(newNotes)
         console.log(chalk.bgGreen('Note removed'))
@@ -38,13 +33,13 @@ const removeNote = function (title) {
     }
 }
 
-const saveNote = function (notes) {
+const saveNote = (notes) => {
     const dataJSON = JSON.stringify(notes)
     fs.writeFileSync('notes.json' , dataJSON)
 }
 
 
-const loadNote = function() {
+const loadNote = () => {
     try{
         const dataBuffer = fs.readFileSync('notes.json')
     const dataJSON = dataBuffer.toString()
@@ -54,8 +49,31 @@ const loadNote = function() {
     }
     
 }
+
+const listNotes = () => {
+    const notes = loadNote()
+    console.log(chalk.bgBlue('Your notes'))
+    notes.forEach((note) => {
+        console.log(note.title)
+    });
+    
+}
+
+const readNote = (title) => {
+    const notes = loadNote()
+    const note = notes.find((note)=>note.title === title)
+    if(note){
+        console.log(chalk.inverse(note.title))
+        console.log(note.body)
+    } else {
+        console.log(chalk.bgRed('no note found'))
+    }
+}
+
 module.exports = {
     getNotes: getNotes,
     addNote: addNote,
-    removeNote: removeNote
+    removeNote: removeNote,
+    listNotes: listNotes,
+    readNote: readNote
 }
